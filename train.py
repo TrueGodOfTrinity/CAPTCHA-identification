@@ -101,7 +101,8 @@ def train_one_epoch(
                         "Consider increasing image width / reducing width downsampling in CNN."
                     )
 
-                loss = ctc_loss_fn(log_probs, targets, input_lengths, target_lengths)
+            with torch.cuda.amp.autocast(device_type=device.type, enabled=False):
+                loss = ctc_loss_fn(log_probs.float(), targets, input_lengths, target_lengths)
 
             if scaler is not None and use_amp:
                 scaler.scale(loss).backward()
